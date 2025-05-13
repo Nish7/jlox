@@ -2,12 +2,17 @@ package com.nish.lox;
 
 import java.util.List;
 
+import com.nish.lox.Expr.Assign;
 import com.nish.lox.Expr.Binary;
 import com.nish.lox.Expr.Grouping;
 import com.nish.lox.Expr.Unary;
+import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Print;
+import com.nish.lox.Stmt.Var;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    private Environment environment = new Environment();
+
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement : statements) {
@@ -155,6 +160,28 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
         return null;
+    }
+
+    @Override
+    public Void visitVarStmt(Var stmt) {
+        Object value = null;
+        if (stmt.intializer != null) {
+            value = evaluate(stmt.intializer);
+        }
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    @Override
+    public Object visitVariableExpr(Variable expr) {
+        return environment.get(expr.name);
+    }
+
+    @Override
+    public Object visitAssignExpr(Assign expr) {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
     }
 
 }

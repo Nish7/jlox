@@ -3,8 +3,11 @@ package com.nish.lox;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nish.lox.Expr.Assign;
+import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Expression;
 import com.nish.lox.Stmt.Print;
+import com.nish.lox.Stmt.Var;
 
 class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
@@ -83,5 +86,20 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitPrintStmt(Print stmt) {
         return parenthesize("PrintStmt", stmt.expression);
+    }
+
+    @Override
+    public String visitVarStmt(Var stmt) {
+        return parenthesize("VarStmt [" + stmt.name + "]", stmt.intializer);
+    }
+
+    @Override
+    public String visitAssignExpr(Assign expr) {
+        return parenthesize("AssignExpr [" + expr.name + "]", expr.value);
+    }
+
+    @Override
+    public String visitVariableExpr(Variable expr) {
+        return "(variable [" + expr.name + "])";
     }
 }
