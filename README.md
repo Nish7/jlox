@@ -1,2 +1,2 @@
 # jlox
-> jlox is a Java implementation of the tree-walk interprete
+ jlox is a Java implementation of the tree-walk interprete
