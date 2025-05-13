@@ -1,9 +1,25 @@
 package com.nish.lox;
 
-class AstPrinter implements Expr.Visitor<String> {
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nish.lox.Stmt.Expression;
+import com.nish.lox.Stmt.Print;
+
+class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    String print(List<Stmt> statements) {
+        StringBuilder builder = new StringBuilder();
+        for (Stmt statement : statements) {
+            builder.append(statement.accept(this));
+            builder.append("\n");
+        }
+
+        return builder.toString();
     }
 
     @Override
@@ -49,6 +65,23 @@ class AstPrinter implements Expr.Visitor<String> {
                 new Token(TokenType.STAR, "*", null, 1),
                 new Expr.Grouping(new Expr.Literal(45.67)));
 
-        System.out.println(new AstPrinter().print(expression));
+        Expr printExpr = new Expr.Binary(new Expr.Literal(1), new Token(TokenType.PLUS, "+", null, 1),
+                new Expr.Literal(68));
+
+        List<Stmt> statements = new ArrayList<Stmt>();
+        statements.add(new Stmt.Expression(expression));
+        statements.add(new Stmt.Print(printExpr));
+
+        System.out.println(new AstPrinter().print(statements));
+    }
+
+    @Override
+    public String visitExpressionStmt(Expression stmt) {
+        return parenthesize("ExprStmt", stmt.expression);
+    }
+
+    @Override
+    public String visitPrintStmt(Print stmt) {
+        return parenthesize("PrintStmt", stmt.expression);
     }
 }

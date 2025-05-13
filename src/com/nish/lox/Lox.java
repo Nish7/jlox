@@ -51,21 +51,21 @@ public class Lox {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         if (hadError)
             return;
 
-        System.out.println("Tokens:");
+        System.out.println("Lexical Tokens:");
         for (Token token : tokens) {
             System.out.println(token);
         }
 
-        System.out.println("Expression:");
-        System.out.println(new AstPrinter().print(expression));
+        System.out.println("\nSyntax Tree:");
+        System.out.println(new AstPrinter().print(statements));
 
-        System.out.println("Interpreter Output:");
-        interpreter.interpret(expression);
+        System.out.println("\nInterpreter Output:");
+        interpreter.interpret(statements);
     }
 
     static public void error(int line, String message) {

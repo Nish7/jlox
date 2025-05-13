@@ -12,6 +12,7 @@ public class GenerateAST {
         }
 
         String outputDir = args[0];
+
         defineAst(
                 outputDir,
                 "Expr",
@@ -20,6 +21,8 @@ public class GenerateAST {
                         "Grouping: Expr expression",
                         "Literal: Object value",
                         "Unary: Token operator, Expr right"));
+
+        defineAst(outputDir, "Stmt", Arrays.asList("Expression : Expr expression", "Print : Expr expression"));
     }
 
     private static void defineAst(
@@ -29,7 +32,7 @@ public class GenerateAST {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package src.com.lox;");
+        writer.println("package com.nish.lox;");
         writer.println();
         writer.println("abstract class " + baseName + "{ ");
 
