@@ -60,7 +60,11 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
         builder.append("(").append(name);
         for (Expr expr : exprs) {
             builder.append(" ");
-            builder.append(expr.accept(this));
+            if (expr == null) {
+                builder.append("null");
+            } else {
+                builder.append(expr.accept(this));
+            }
         }
         builder.append(")");
 
