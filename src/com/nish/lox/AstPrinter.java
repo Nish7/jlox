@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nish.lox.Expr.Assign;
+import com.nish.lox.Expr.Logical;
 import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Block;
 import com.nish.lox.Stmt.Expression;
+import com.nish.lox.Stmt.If;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
 
@@ -16,11 +18,14 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
         return expr.accept(this);
     }
 
+    String print(Stmt statement) {
+        return statement.accept(this);
+    }
+
     String print(List<Stmt> statements) {
         StringBuilder builder = new StringBuilder();
         for (Stmt statement : statements) {
-            builder.append(statement.accept(this));
-            builder.append("\n");
+            builder.append(statement.accept(this)).append('\n');
         }
 
         return builder.toString();
@@ -107,5 +112,17 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitBlockStmt(Block stmt) {
         return "(Block " + print(stmt.statements) + ")";
+    }
+
+    @Override
+    public String visitIfStmt(If stmt) {
+        return "(If condition=[" + print(stmt.condition) +
+                "] then=[" + print(stmt.thenBranch) +
+                "] else=[" + print(stmt.elseBranch) + "])";
+    }
+
+    @Override
+    public String visitLogicalExpr(Logical expr) {
+        return parenthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 }

@@ -5,9 +5,11 @@ import java.util.List;
 import com.nish.lox.Expr.Assign;
 import com.nish.lox.Expr.Binary;
 import com.nish.lox.Expr.Grouping;
+import com.nish.lox.Expr.Logical;
 import com.nish.lox.Expr.Unary;
 import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Block;
+import com.nish.lox.Stmt.If;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
 
@@ -201,6 +203,32 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } finally {
             this.environment = previous;
         }
+    }
+
+    @Override
+    public Void visitIfStmt(If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitLogicalExpr(Logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left))
+                return left;
+        } else {
+            if (!isTruthy(left))
+                return left;
+        }
+
+        return evaluate(expr.right);
     }
 
 }
