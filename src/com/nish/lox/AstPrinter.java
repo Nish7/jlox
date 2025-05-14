@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.nish.lox.Expr.Assign;
 import com.nish.lox.Expr.Variable;
+import com.nish.lox.Stmt.Block;
 import com.nish.lox.Stmt.Expression;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
@@ -101,5 +102,10 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitVariableExpr(Variable expr) {
         return "(variable [" + expr.name + "])";
+    }
+
+    @Override
+    public String visitBlockStmt(Block stmt) {
+        return "(Block " + print(stmt.statements) + ")";
     }
 }

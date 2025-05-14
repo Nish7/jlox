@@ -7,6 +7,7 @@ import com.nish.lox.Expr.Binary;
 import com.nish.lox.Expr.Grouping;
 import com.nish.lox.Expr.Unary;
 import com.nish.lox.Expr.Variable;
+import com.nish.lox.Stmt.Block;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
 
@@ -182,6 +183,24 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object value = evaluate(expr.value);
         environment.assign(expr.name, value);
         return value;
+    }
+
+    @Override
+    public Void visitBlockStmt(Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
+
+    private void executeBlock(List<Stmt> statements, Environment environment) {
+        Environment previous = this.environment;
+        try {
+            this.environment = environment;
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
     }
 
 }
