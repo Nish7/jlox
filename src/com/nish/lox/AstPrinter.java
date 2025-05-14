@@ -11,6 +11,7 @@ import com.nish.lox.Stmt.Expression;
 import com.nish.lox.Stmt.If;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
+import com.nish.lox.Stmt.While;
 
 class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
@@ -124,5 +125,11 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitLogicalExpr(Logical expr) {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+    }
+
+    @Override
+    public String visitWhileStmt(While stmt) {
+        return "(while condition=[" + print(stmt.condition) +
+                "] body=[" + print(stmt.body) + "])";
     }
 }

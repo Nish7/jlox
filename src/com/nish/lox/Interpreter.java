@@ -60,25 +60,25 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         switch (expr.operator.type) {
             case GREATER:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left > (double) right;
             case GREATER_EQUAL:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left >= (double) right;
             case LESS:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left < (double) right;
             case LESS_EQUAL:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left <= (double) right;
             case MINUS:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left - (double) right;
             case SLASH:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left / (double) right;
             case STAR:
-                checkNumberOperands(expr.operator, expr.left, expr.right);
+                checkNumberOperands(expr.operator, left, right);
                 return (double) left * (double) right;
             case BANG_EQUAL:
                 return !isEqual(left, right);
@@ -229,6 +229,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return evaluate(expr.right);
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        while (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body);
+        }
+        return null;
     }
 
 }
