@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nish.lox.Expr.Assign;
+import com.nish.lox.Expr.Call;
 import com.nish.lox.Expr.Logical;
 import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Block;
 import com.nish.lox.Stmt.Expression;
+import com.nish.lox.Stmt.Function;
 import com.nish.lox.Stmt.If;
 import com.nish.lox.Stmt.Print;
 import com.nish.lox.Stmt.Var;
@@ -52,6 +54,23 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    private String parenthesize(String name, List<Expr> exprs) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("(").append(name);
+        for (Expr expr : exprs) {
+            builder.append(" ");
+            if (expr == null) {
+                builder.append("null");
+            } else {
+                builder.append(expr.accept(this));
+            }
+        }
+        builder.append(")");
+
+        return builder.toString();
     }
 
     private String parenthesize(String name, Expr... exprs) {
@@ -135,5 +154,16 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     public String visitWhileStmt(While stmt) {
         return "(while condition=[" + print(stmt.condition) +
                 "] body=[" + print(stmt.body) + "])";
+    }
+
+    @Override
+    public String visitFunctionStmt(Function stmt) {
+        return "(FunctionStmt name=" + stmt.name + " param=[" + stmt.params.toString() + "] body=[" + print(stmt.body)
+                + "])";
+    }
+
+    @Override
+    public String visitCallExpr(Call expr) {
+        return parenthesize("call callee=[" + print(expr.callee) + "] arguments=", expr.arguments);
     }
 }
