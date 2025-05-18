@@ -12,6 +12,7 @@ import com.nish.lox.Stmt.Expression;
 import com.nish.lox.Stmt.Function;
 import com.nish.lox.Stmt.If;
 import com.nish.lox.Stmt.Print;
+import com.nish.lox.Stmt.Return;
 import com.nish.lox.Stmt.Var;
 import com.nish.lox.Stmt.While;
 
@@ -140,9 +141,14 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitIfStmt(If stmt) {
-        return "(If condition=[" + print(stmt.condition) +
-                "] then=[" + print(stmt.thenBranch) +
-                "] else=[" + print(stmt.elseBranch) + "])";
+        String string = "(If condition=[" + print(stmt.condition) +
+                "] then=[" + print(stmt.thenBranch) + "]";
+
+        if (stmt.elseBranch != null) {
+            string += "else=[" + print(stmt.elseBranch) + "]";
+        }
+
+        return string + ")";
     }
 
     @Override
@@ -165,5 +171,10 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitCallExpr(Call expr) {
         return parenthesize("call callee=[" + print(expr.callee) + "] arguments=", expr.arguments);
+    }
+
+    @Override
+    public String visitReturnStmt(Return stmt) {
+        return parenthesize("Return", stmt.value);
     }
 }

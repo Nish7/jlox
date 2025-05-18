@@ -77,6 +77,8 @@ class Parser {
     private Stmt statement() {
         if (match(PRINT))
             return printStatement();
+        if (match(RETURN))
+            return returnStatement();
         if (match(LEFT_BRACE))
             return new Stmt.Block(block());
         if (match(IF))
@@ -87,6 +89,18 @@ class Parser {
             return forStatement();
 
         return expressionStatement();
+    }
+
+    private Stmt returnStatement() {
+        Token keyword = previous();
+        Expr value = null;
+
+        if (!check(SEMICOLON)) {
+            value = expression();
+        }
+
+        consume(SEMICOLON, "Expect ; after the return value ");
+        return new Stmt.Return(keyword, value);
     }
 
     private Stmt forStatement() {
