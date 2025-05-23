@@ -64,6 +64,12 @@ public class Lox {
         System.out.println("\nSyntax Tree:");
         System.out.println(new AstPrinter().print(statements));
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
+        if (hadError)
+            return;
+
         System.out.println("\nInterpreter Output:");
         interpreter.interpret(statements);
     }
