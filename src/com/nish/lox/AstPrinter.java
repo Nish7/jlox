@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.nish.lox.Expr.Assign;
 import com.nish.lox.Expr.Call;
+import com.nish.lox.Expr.Get;
 import com.nish.lox.Expr.Logical;
+import com.nish.lox.Expr.Set;
+import com.nish.lox.Expr.This;
 import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Block;
+import com.nish.lox.Stmt.Class;
 import com.nish.lox.Stmt.Expression;
 import com.nish.lox.Stmt.Function;
 import com.nish.lox.Stmt.If;
@@ -27,6 +31,15 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     }
 
     String print(List<Stmt> statements) {
+        StringBuilder builder = new StringBuilder();
+        for (Stmt statement : statements) {
+            builder.append(statement.accept(this)).append('\n');
+        }
+
+        return builder.toString();
+    }
+
+    String printFunction(List<Stmt.Function> statements) {
         StringBuilder builder = new StringBuilder();
         for (Stmt statement : statements) {
             builder.append(statement.accept(this)).append('\n');
@@ -121,7 +134,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitVarStmt(Var stmt) {
-        return parenthesize("VarStmt [" + stmt.name + "]", stmt.intializer);
+        return parenthesize("VarStmt [" + stmt.name.lexeme + "]", stmt.intializer);
     }
 
     @Override
@@ -164,7 +177,8 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitFunctionStmt(Function stmt) {
-        return "(FunctionStmt name=" + stmt.name + " param=[" + stmt.params.toString() + "] body=[" + print(stmt.body)
+        return "(FunctionStmt name=" + stmt.name.lexeme + " param=[" + stmt.params.toString() + "] body=["
+                + print(stmt.body)
                 + "])";
     }
 
@@ -176,5 +190,26 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitReturnStmt(Return stmt) {
         return parenthesize("Return", stmt.value);
+    }
+
+    @Override
+    public String visitClassStmt(Class stmt) {
+        return "(Class  " + stmt.name.lexeme + printFunction(stmt.methods) + ")";
+    }
+
+    @Override
+    public String visitGetExpr(Get expr) {
+        return "(Get name=[" + expr.name.lexeme + "] object=[" + print(expr.Object) + "])";
+    }
+
+    @Override
+    public String visitSetExpr(Set expr) {
+        return "(Set name=[" + expr.name.lexeme + "] object=[" + print(expr.object) + "] value=[" + print(expr.value)
+                + "])";
+    }
+
+    @Override
+    public String visitThisExpr(This expr) {
+        return "(This)";
     }
 }
