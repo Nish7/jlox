@@ -8,6 +8,7 @@ import com.nish.lox.Expr.Call;
 import com.nish.lox.Expr.Get;
 import com.nish.lox.Expr.Logical;
 import com.nish.lox.Expr.Set;
+import com.nish.lox.Expr.Super;
 import com.nish.lox.Expr.This;
 import com.nish.lox.Expr.Variable;
 import com.nish.lox.Stmt.Block;
@@ -211,5 +212,10 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitThisExpr(This expr) {
         return "(This)";
+    }
+
+    @Override
+    public String visitSuperExpr(Super expr) {
+        return "(Super method=[" + expr.method + "])";
     }
 }
